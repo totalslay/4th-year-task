@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}TaxRule{% endblock %}
+
+{% block body %}
+    <h1>TaxRule</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ tax_rule.id }}</td>
+            </tr>
+            <tr>
+                <th>MinAmount</th>
+                <td>{{ tax_rule.minAmount }}</td>
+            </tr>
+            <tr>
+                <th>MaxAmount</th>
+                <td>{{ tax_rule.maxAmount }}</td>
+            </tr>
+            <tr>
+                <th>Rate(%)</th>
+                <td>{{ tax_rule.rate }}</td>
+            </tr>
+            <tr>
+                <th>TaxType</th>
+                <td>{{ tax_rule.taxType }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_tax_rule_index') }}">back to list</a>
+
+    <a href="{{ path('app_tax_rule_edit', {'id': tax_rule.id}) }}">edit</a>
+
+    {{ include('tax_rule/_delete_form.html.twig') }}
+{% endblock %}

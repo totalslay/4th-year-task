@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New PayrollPeriod{% endblock %}
+
+{% block body %}
+    <h1>Create new PayrollPeriod</h1>
+
+    {{ include('payroll_period/_form.html.twig') }}
+
+    <a href="{{ path('app_payroll_period_index') }}">back to list</a>
+{% endblock %}

@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}PayrollPeriod index{% endblock %}
+
+{% block body %}
+    <h1>PayrollPeriod index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>StartDate</th>
+                <th>EndDate</th>
+                <th>Status</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for payroll_period in payroll_periods %}
+            <tr>
+                <td>{{ payroll_period.id }}</td>
+                <td>{{ payroll_period.startDate ? payroll_period.startDate|date('Y-m-d') : '' }}</td>
+                <td>{{ payroll_period.endDate ? payroll_period.endDate|date('Y-m-d') : '' }}</td>
+                <td>{{ payroll_period.status }}</td>
+                <td>
+                    <a href="{{ path('app_payroll_period_show', {'id': payroll_period.id}) }}">show</a>
+                    <a href="{{ path('app_payroll_period_edit', {'id': payroll_period.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="5">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_payroll_period_new') }}">Create new</a>
+{% endblock %}

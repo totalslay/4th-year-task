@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}TaxRule index{% endblock %}
+
+{% block body %}
+    <h1>TaxRule index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>MinAmount</th>
+                <th>MaxAmount</th>
+                <th>Rate(%)</th>
+                <th>TaxType</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for tax_rule in tax_rules %}
+            <tr>
+                <td>{{ tax_rule.id }}</td>
+                <td>{{ tax_rule.minAmount }}</td>
+                <td>{{ tax_rule.maxAmount }}</td>
+                <td>{{ tax_rule.rate }}</td>
+                <td>{{ tax_rule.taxType }}</td>
+                <td>
+                    <a href="{{ path('app_tax_rule_show', {'id': tax_rule.id}) }}">show</a>
+                    <a href="{{ path('app_tax_rule_edit', {'id': tax_rule.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="6">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_tax_rule_new') }}">Create new</a>
+{% endblock %}
