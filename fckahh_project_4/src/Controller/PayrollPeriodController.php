@@ -50,10 +50,12 @@ final class PayrollPeriodController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/edit', name: 'app_payroll_period_edit', methods: ['GET', 'POST'])]
+    #[Route('/{id}/edit', name: 'app_payroll_period_edit', methods: ['GET', 'PUT'])]
     public function edit(Request $request, PayrollPeriod $payrollPeriod, EntityManagerInterface $entityManager): Response
     {
-        $form = $this->createForm(PayrollPeriodType::class, $payrollPeriod);
+        $form = $this->createForm(PayrollPeriodType::class, $payrollPeriod, [
+            'method' => 'PUT'
+        ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -68,9 +70,10 @@ final class PayrollPeriodController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_payroll_period_delete', methods: ['POST'])]
+    #[Route('/{id}', name: 'app_payroll_period_delete', methods: ['DELETE'])]
     public function delete(Request $request, PayrollPeriod $payrollPeriod, EntityManagerInterface $entityManager): Response
     {
+        $token = $request->request->get('_token') ?? $request->query->get('_token');
         if ($this->isCsrfTokenValid('delete'.$payrollPeriod->getId(), $request->getPayload()->getString('_token'))) {
             $entityManager->remove($payrollPeriod);
             $entityManager->flush();

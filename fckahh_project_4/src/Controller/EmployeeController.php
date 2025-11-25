@@ -50,10 +50,12 @@ final class EmployeeController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/edit', name: 'app_employee_edit', methods: ['GET', 'POST'])]
+    #[Route('/{id}/edit', name: 'app_employee_edit', methods: ['GET', 'PUT'])]
     public function edit(Request $request, Employee $employee, EntityManagerInterface $entityManager): Response
     {
-        $form = $this->createForm(EmployeeType::class, $employee);
+        $form = $this->createForm(EmployeeType::class, $employee, [
+            'method' => 'PUT'
+        ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -64,13 +66,14 @@ final class EmployeeController extends AbstractController
 
         return $this->render('employee/edit.html.twig', [
             'employee' => $employee,
-            'form' => $form,
+            'form' => $form ->createView(),
         ]);
     }
 
-    #[Route('/{id}', name: 'app_employee_delete', methods: ['POST'])]
+    #[Route('/{id}', name: 'app_employee_delete', methods: ['DELETE'])]
     public function delete(Request $request, Employee $employee, EntityManagerInterface $entityManager): Response
     {
+        $token = $request->request->get('_token') ?? $request->query->get('_token');
         if ($this->isCsrfTokenValid('delete'.$employee->getId(), $request->getPayload()->getString('_token'))) {
             $entityManager->remove($employee);
             $entityManager->flush();

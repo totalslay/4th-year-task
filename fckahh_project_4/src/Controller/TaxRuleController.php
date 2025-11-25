@@ -50,10 +50,12 @@ final class TaxRuleController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/edit', name: 'app_tax_rule_edit', methods: ['GET', 'POST'])]
+    #[Route('/{id}/edit', name: 'app_tax_rule_edit', methods: ['GET', 'PUT'])]
     public function edit(Request $request, TaxRule $taxRule, EntityManagerInterface $entityManager): Response
     {
-        $form = $this->createForm(TaxRuleType::class, $taxRule);
+        $form = $this->createForm(TaxRuleType::class, $taxRule, [
+            'method' => 'PUT'
+        ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -68,9 +70,10 @@ final class TaxRuleController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_tax_rule_delete', methods: ['POST'])]
+    #[Route('/{id}', name: 'app_tax_rule_delete', methods: ['DELETE'])]
     public function delete(Request $request, TaxRule $taxRule, EntityManagerInterface $entityManager): Response
     {
+        $token = $request->request->get('_token') ?? $request->query->get('_token');
         if ($this->isCsrfTokenValid('delete'.$taxRule->getId(), $request->getPayload()->getString('_token'))) {
             $entityManager->remove($taxRule);
             $entityManager->flush();
