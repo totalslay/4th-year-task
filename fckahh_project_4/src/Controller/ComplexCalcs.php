@@ -8,6 +8,7 @@ use App\Calculations\TaxCalc;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Contracts\Cache\CacheInterface;
 
 class ComplexCalcs extends AbstractController
 {
@@ -15,7 +16,8 @@ class ComplexCalcs extends AbstractController
     public function index(
         TaxCalc $taxCalc,
         OvertimeCalc $overtimeCalc,
-        ProportionCalc $proportionCalc
+        ProportionCalc $proportionCalc,
+        CacheInterface $cache
     ): Response {
         $tax = $taxCalc->getTax();
         $exampleTax = $taxCalc->calcSalaryTax(300000);

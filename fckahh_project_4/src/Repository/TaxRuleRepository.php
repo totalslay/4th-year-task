@@ -5,6 +5,8 @@ namespace App\Repository;
 use App\Entity\TaxRule;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Contracts\Cache\CacheInterface;
+use Symfony\Contracts\Cache\ItemInterface;
 
 /**
  * @extends ServiceEntityRepository<TaxRule>
@@ -16,28 +18,17 @@ class TaxRuleRepository extends ServiceEntityRepository
         parent::__construct($registry, TaxRule::class);
     }
 
-    //    /**
-    //     * @return TaxRule[] Returns an array of TaxRule objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('t')
-    //            ->andWhere('t.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('t.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
-
-    //    public function findOneBySomeField($value): ?TaxRule
-    //    {
-    //        return $this->createQueryBuilder('t')
-    //            ->andWhere('t.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+    public function FindCacheTaxRule(CacheInterface $cache):array
+    {
+        return $cache->get('tax_rules_cache', function (ItemInterface $item) {
+            $item->expiresAfter(3600);
+            
+            return $this->createQueryBuilder('t')
+                ->andWhere('t.taxType = :taxType')
+                ->setParameter('taxType', 'INCOME_TAX')
+                ->orderBy('t.minAmount', 'ASC')
+                ->getQuery()
+                ->getResult();
+        });
+    }
 }
