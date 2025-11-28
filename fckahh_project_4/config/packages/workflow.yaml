@@ -1,0 +1,29 @@
+framework:
+    workflows:
+        payroll_period:
+            type: 'state_machine'
+            audit_trail:
+                enabled: true
+            marking_store:
+                type: 'method'
+                property: 'status'
+            supports:
+             - App\Entity\payroll_period
+            initial_marking: DRAFT
+            places:
+                - DRAFT
+                - APPROVED
+                - PROCESSED
+            transitions:
+                to_approved:
+                    from: DRAFT
+                    to: APPROVED
+                to_processed:
+                    from: APPROVED
+                    to: PROCESSED
+                back_to_draft:
+                    from: APPROVED
+                    to: DRAFT
+
+
+

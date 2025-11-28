@@ -23,7 +23,7 @@ class PayrollPeriod
     private ?\DateTime $endDate = null;
 
     #[ORM\Column(length: 20)]
-    private ?string $status = null;
+    private ?string $status = 'DRAFT';
 
     /**
      * @var Collection<int, Accrual>
