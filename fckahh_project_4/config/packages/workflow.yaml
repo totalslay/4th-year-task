@@ -8,7 +8,7 @@ framework:
                 type: 'method'
                 property: 'status'
             supports:
-             - App\Entity\payroll_period
+                - App\Entity\PayrollPeriod
             initial_marking: DRAFT
             places:
                 - DRAFT
@@ -24,6 +24,3 @@ framework:
                 back_to_draft:
                     from: APPROVED
                     to: DRAFT
-
-
-

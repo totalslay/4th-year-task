@@ -17,13 +17,15 @@
         "symfony/flex": "^2",
         "symfony/form": "6.4.*",
         "symfony/framework-bundle": "6.4.*",
+        "symfony/messenger": "6.4.*",
         "symfony/monolog-bundle": "^3.11",
         "symfony/runtime": "6.4.*",
         "symfony/security-csrf": "6.4.*",
         "symfony/twig-bundle": "6.4.*",
         "symfony/validator": "6.4.*",
         "symfony/workflow": "6.4.*",
-        "symfony/yaml": "6.4.*"
+        "symfony/yaml": "6.4.*",
+        "tecnickcom/tcpdf": "^6.10"
     },
     "require-dev": {
         "symfony/maker-bundle": "^1.64"

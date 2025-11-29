@@ -13,7 +13,7 @@ when@dev:
                 channels: ["!event"]
             audit:
                 type: stream
-                path: "kernel.logs_dir%/%kernel.environment%.log"
+                path: "%kernel.logs_dir%/%kernel.environment%.log"
                 level: debug
                 channels: [audit]
             console:
@@ -36,7 +36,7 @@ when@test:
                 level: debug
             audit:
                 type: stream
-                path: "kernel.logs_dir%/audit.log"
+                path: "%kernel.logs_dir%/audit.log"
                 level: info
                 channels: [audit]
 
@@ -57,7 +57,7 @@ when@prod:
                 formatter: monolog.formatter.json
             audit:
                 type: stream
-                path: "$kernel.logs_dir%/audit.log"
+                path: "%kernel.logs_dir%/audit.log"
                 level: info
                 channels: [audit]
                 formatter: monolog.formatter.json
