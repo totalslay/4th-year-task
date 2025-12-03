@@ -16,28 +16,31 @@ class DeductionRepository extends ServiceEntityRepository
         parent::__construct($registry, Deduction::class);
     }
 
-    //    /**
-    //     * @return Deduction[] Returns an array of Deduction objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('d')
-    //            ->andWhere('d.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('d.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    public function findDeductions(string $type, int $periodId): array
+    {
+        return $this->createQueryBuilder('d')
+            ->select('e.fullName', 'd.amount', 'd.type')
+            ->join('d.employee', 'e')
+            ->andWhere('d.type = :type')
+            ->andWhere('d.period = :periodId')
+            ->setParameter('type', $type)
+            ->setParameter('periodId', $periodId)
+            ->orderBy('d.amount', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
 
-    //    public function findOneBySomeField($value): ?Deduction
-    //    {
-    //        return $this->createQueryBuilder('d')
-    //            ->andWhere('d.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+    public function findTotalDeductionsByEmployee(int $employeeId, int $periodId): float
+    {
+        $result = $this->createQueryBuilder('d')
+            ->select('SUM(d.amount) as total')
+            ->andWhere('d.employee = :employeeId')
+            ->andWhere('d.period = :periodId')
+            ->setParameter('employeeId', $employeeId)
+            ->setParameter('periodId', $periodId)
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        return $result ? (float) $result : 0.0;
+    }
 }

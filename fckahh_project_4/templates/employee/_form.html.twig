@@ -1,5 +1,5 @@
-{{ form_start(form, {'method': form_method|default('POST')}) }}
-    {% if form_method == 'PUT' %}
+{{ form_start(form, {'method': method|default('POST')}) }}
+    {% if method is defined and method == 'PUT' %}
         <input type="hidden" name="_method" value="PUT">
     {% endif %}
     {{ form_widget(form) }}

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Complex calculations</title>
+    <style>
+        table { border-collapse: collapse; width: 100%; margin: 15px 0; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        .section { margin: 30px 0; padding: 20px; border: 1px solid #eee; }
+        h2 { color: #333; border-bottom: 2px solid #4CAF50; padding-bottom: 10px; }
+        h3 { color: #555; margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <h1>Complex calculations of the system</h1>
+    
+    <div class="section">
+        <h2>Taxes on a progressive scale</h2>
+        
+        {% if tax is iterable %}
+        <table>
+            <tr>
+                <th>From</th>
+                <th>To</th>
+                <th>Rate</th>
+            </tr>
+            {% for rule in tax %}
+            <tr>
+                <td>{{ rule.minAmount|default(0)|number_format(0, '.', ' ') }}</td>
+                <td>{{ rule.maxAmount ? rule.maxAmount|number_format(0, '.', ' ') : '∞' }}</td>
+                <td>{{ ((rule.rate|default(0)) * 100)|number_format(1) }}%</td>
+            </tr>
+            {% endfor %}
+        </table>
+        {% else %}
+        <p>Tax rules: {{ tax }}</p>
+        {% endif %}
+
+        <h3>Tax calculation for a salary of 300,000:</h3>
+        <p>Tax amount: {{ exampleTax|default(0)|number_format(0, '.', ' ') }}</p>
+    </div>
+
+    <div class="section">
+        <h2>Employee overtime</h2>
+        
+        <h3>All overtime payments:</h3>
+        <table>
+            <tr>
+                <th>Employee</th>
+                <th>Type</th>
+                <th>Overtime amount</th>
+            </tr>
+            {% for overtime in overtimes %}
+            <tr>
+                <td>{{ overtime.fullName|default('Unknown') }}</td>
+                <td>{{ overtime.type|default('N/A') }}</td>
+                <td>{{ overtime.amount|default(0)|number_format(0, '.', ' ') }}</td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="3">No overtime data</td>
+            </tr>
+            {% endfor %}
+        </table>
+
+        <h3>Employees with above-average overtime (more than 20 hours):</h3>
+        <table>
+            <tr>
+                <th>Employee</th>
+                <th>Total overtime</th>
+            </tr>
+            {% for employee in highOvertimes %}
+            <tr>
+                <td>{{ employee.fullName|default('Unknown') }}</td>
+                <td>{{ employee.totalOvertime|default(0)|number_format(0, '.', ' ') }}</td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="2">No employees with above-average overtime</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    
+    <div class="section">
+        <h2>Proportional deductions (INCOME_TAX)</h2>
+        
+        <table>
+            <tr>
+                <th>Employee</th>
+                <th>Type</th>
+                <th>Deduction amount</th>
+            </tr>
+            {% for deduction in proportionalDeductions %}
+            <tr>
+                <td>{{ deduction.fullName|default('Unknown') }}</td>
+                <td>{{ deduction.type|default('N/A') }}</td>
+                <td>{{ deduction.amount|default(0)|number_format(0, '.', ' ') }}</td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="3">No deduction data</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+    <div style="margin-top: 30px; text-align: center;">
+        <a href="{{ path('app_employee_index') }}">← Back to employees</a> |
+        <a href="{{ path('app_payroll_period_index') }}">Go to periods →</a>
+    </div>
+</body>
+</html>

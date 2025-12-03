@@ -16,28 +16,47 @@ class AccrualRepository extends ServiceEntityRepository
         parent::__construct($registry, Accrual::class);
     }
 
-    //    /**
-    //     * @return Accrual[] Returns an array of Accrual objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('a')
-    //            ->andWhere('a.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('a.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    public function findOvertimeByPeriod(int $periodId): array
+    {
+        return $this->createQueryBuilder('a')
+            ->select('e.fullName', 'a.amount', 'a.type')
+            ->join('a.employee', 'e')
+            ->andWhere('a.period = :periodId')
+            ->andWhere('a.type LIKE :type')
+            ->setParameter('periodId', $periodId)
+            ->setParameter('type', '%OVERTIME%')
+            ->orderBy('a.amount', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
 
-    //    public function findOneBySomeField($value): ?Accrual
-    //    {
-    //        return $this->createQueryBuilder('a')
-    //            ->andWhere('a.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+    public function findEmployeesOvertime(int $periodId): array
+    {
+        return $this->createQueryBuilder('a')
+            ->select('e.id', 'e.fullName', 'SUM(a.amount) as totalOvertime')
+            ->join('a.employee', 'e')
+            ->andWhere('a.period = :periodId')
+            ->andWhere('a.type = :type')
+            ->setParameter('periodId', $periodId)
+            ->setParameter('type', 'OVERTIME')
+            ->groupBy('e.id')
+            ->having('SUM(a.amount) > 20')
+            ->orderBy('totalOvertime', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findByTypeAndPeriod(string $type, int $periodId): array
+    {
+        return $this->createQueryBuilder('a')
+            ->select('e.fullName', 'a.amount', 'a.type')
+            ->join('a.employee', 'e')
+            ->andWhere('a.type = :type')
+            ->andWhere('a.period = :periodId')
+            ->setParameter('type', $type)
+            ->setParameter('periodId', $periodId)
+            ->orderBy('a.amount', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
 }

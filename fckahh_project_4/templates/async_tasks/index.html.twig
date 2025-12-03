@@ -1,0 +1,93 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}AsyncTasks{% endblock %}
+
+{% block body %}
+    <h1>Asynchronous tasks</h1>
+
+    <div class="alert alert-info">
+        <p>Tasks are running in the background using Symfony Messenger.</p>
+        <p>To process tasks, run the worker: <code>php bin/console messenger:consume async</code></p>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Generating calculation sheets</h5>
+</div>
+                <div class="card-body">
+                    <p>Create PDF files for all employees of the selected period.</p>
+                    
+                    <form action="{{ path('app_async_generate_all_payslips', {'periodId': 0}) }}" method="post" id="payslipForm">
+                        <div class="mb-3">
+                            <label for="periodSelect" class="form-label">Select a period:</label>
+                            <select class="form-select" id="periodSelect" name="periodId" required>
+                                <option value="">-- Select a period --</option>
+                                {% for period in periods %}
+                                    <option value="{{ period.id }}">
+                                        {{ period.startDate }} - {{ period.endDate }} ({{ period.status }})
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            Start generation
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5>, Payroll formation</h5>
+</div>
+                <div class="card-body">
+                    <p>Create a summary statement for the bank or accounting department.</p>
+                    
+                    <form action="{{ path('app_async_generate_report', {'periodId': 0}) }}" method="post" id="reportForm">
+                        <div class="mb-3">
+                            <label for="reportPeriodSelect" class="form-label">Select a period:</label>
+                            <select class="form-select" id="reportPeriodSelect" name="periodId" required>
+                                <option value="">-- Select a period --</option>
+                                {% for period in periods %}
+                                    <option value="{{ period.id }}">
+                                        {{ period.startDate }} - {{ period.endDate }} ({{ period.status }})
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-success">
+Create a statement
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-4 alert alert-secondary">
+        <h4>Statistics:</h4>
+        <p><strong>Active employees:</strong> {{ employee_count }}</p>
+        <p><strong>Payment periods:</strong> {{ period_count }}</p>
+        <p><strong>Messenger Transport:</strong> Doctrine (database)</p>
+    </div>
+
+    <script>
+        // Updating the action forms when selecting a period
+        document.getElementById('periodSelect').addEventListener('change', function() {
+            const form = document.getElementById('payslipForm');
+            const periodId = this.value;
+            form.action = "{{ path('app_async_generate_all_payslips', {'periodId': 0}) }}".replace('0', periodId);
+        });
+
+        document.getElementById('reportPeriodSelect').addEventListener('change', function() {
+            const form = document.getElementById('reportForm');
+            const periodId = this.value;
+            form.action = "{{ path('app_async_generate_report', {'periodId': 0}) }}".replace('0', periodId);
+        });
+    </script>
+{% endblock %}
+{% endblock %}

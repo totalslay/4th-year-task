@@ -74,7 +74,7 @@ final class TaxRuleController extends AbstractController
     public function delete(Request $request, TaxRule $taxRule, EntityManagerInterface $entityManager): Response
     {
         $token = $request->request->get('_token') ?? $request->query->get('_token');
-        if ($this->isCsrfTokenValid('delete'.$taxRule->getId(), $request->getPayload()->getString('_token'))) {
+        if ($this->isCsrfTokenValid('delete'.$taxRule->getId(), $token)) {
             $entityManager->remove($taxRule);
             $entityManager->flush();
         }

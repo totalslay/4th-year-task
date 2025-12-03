@@ -74,7 +74,7 @@ final class PayrollPeriodController extends AbstractController
     public function delete(Request $request, PayrollPeriod $payrollPeriod, EntityManagerInterface $entityManager): Response
     {
         $token = $request->request->get('_token') ?? $request->query->get('_token');
-        if ($this->isCsrfTokenValid('delete'.$payrollPeriod->getId(), $request->getPayload()->getString('_token'))) {
+        if ($this->isCsrfTokenValid('delete'.$payrollPeriod->getId(), $token)) {
             $entityManager->remove($payrollPeriod);
             $entityManager->flush();
         }

@@ -13,17 +13,14 @@ use Symfony\Contracts\Cache\CacheInterface;
 class ComplexCalcs extends AbstractController
 {
     #[Route('/complex/calc', name: 'complex_calc')]
-    public function index(
-        TaxCalc $taxCalc,
-        OvertimeCalc $overtimeCalc,
-        ProportionCalc $proportionCalc,
-        CacheInterface $cache
-    ): Response {
+    public function index(TaxCalc $taxCalc, OvertimeCalc $overtimeCalc, ProportionCalc $proportionCalc, CacheInterface $cache): Response 
+    {
+        $periodId = 4;
         $tax = $taxCalc->getTax();
         $exampleTax = $taxCalc->calcSalaryTax(300000);
-        $overtimes = $overtimeCalc->getOvertimeByPeriod(1);
-        $highOvertimes = $overtimeCalc->getHighOvertimeEmployees(1);
-        $proportionalDeductions = $proportionCalc->getDeductions('INCOME_TAX', 1);
+        $overtimes = $overtimeCalc->getOvertimeByPeriod($periodId);
+        $highOvertimes = $overtimeCalc->getHighOvertimeEmployees($periodId);
+        $proportionalDeductions = $proportionCalc->getDeductions('INCOME_TAX', $periodId);
 
         return $this->render('complex_calc.html.twig', [
             'tax' => $tax,

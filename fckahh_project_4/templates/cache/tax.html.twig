@@ -1,0 +1,53 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Caching tax tables{% endblock %}
+
+{% block body %}
+    <h1>Caching tax tables</h1>
+    <div class="alert alert-info">
+        <p>Tax rules are cached in Redis.</p>
+        <p>Cache is automatically updated when rules change and expires after 1 hour.</p>
+    </div>
+    <h3>Tax rules (from cache):</h3>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>From</th>
+                <th>To</th>
+                <th>Rate</th>
+                <th>Tax type</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for rule in cached_rules %}
+            <tr>
+                <td>{{ rule.minAmount|number_format(0, '.', ' ') }}</td>
+                <td>{{ rule.maxAmount ? rule.maxAmount|number_format(0, '.', ' ')}}</td>
+                <td>{{ (rule.rate * 100)|number_format(1) }}%</td>
+                <td>{{ rule.taxType }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="mt-4">
+        <a href="{{ path('app_cache_tax_clear') }}" class="btn btn-warning">
+            Clear tax tables cache
+        </a>
+        
+        <a href="{{ path('app_tax_rule_index') }}" class="btn btn-secondary">
+            Managing tax rules
+        </a>
+        
+        <a href="{{ path('app_cache_tax_warm') }}" class="btn btn-info">
+            Warm up cache (command)
+        </a>
+    </div>
+
+    <div class="mt-4 alert alert-secondary">
+        <h4>Technical info:</h4>
+        <p><strong>Cache key:</strong> {{ cache_key }}</p>
+        <p><strong>Lifetime:</strong> 1 hour</p>
+        <p><strong>Rules amount:</strong> {{ cached_rules|length }}</p>
+    </div>
+{% endblock %}

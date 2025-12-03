@@ -24,11 +24,26 @@ class TaxRuleRepository extends ServiceEntityRepository
             $item->expiresAfter(3600);
             
             return $this->createQueryBuilder('t')
-                ->andWhere('t.taxType = :taxType')
+                ->andWhere('t.taxType = :taxType') 
                 ->setParameter('taxType', 'INCOME_TAX')
                 ->orderBy('t.minAmount', 'ASC')
                 ->getQuery()
                 ->getResult();
         });
+    }
+
+    public function findProgressiveTaxRules(): array
+    {
+        return $this->createQueryBuilder('t')
+            ->andWhere('t.taxType = :taxType') 
+            ->setParameter('taxType', 'INCOME_TAX')
+            ->orderBy('t.minAmount', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function invalidateTaxCache(CacheInterface $cache): void
+    {
+        $cache->delete('tax_rules_cache');
     }
 }

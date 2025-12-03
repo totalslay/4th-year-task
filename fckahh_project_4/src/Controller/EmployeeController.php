@@ -66,7 +66,7 @@ final class EmployeeController extends AbstractController
 
         return $this->render('employee/edit.html.twig', [
             'employee' => $employee,
-            'form' => $form ->createView(),
+            'form' => $form
         ]);
     }
 
@@ -74,7 +74,7 @@ final class EmployeeController extends AbstractController
     public function delete(Request $request, Employee $employee, EntityManagerInterface $entityManager): Response
     {
         $token = $request->request->get('_token') ?? $request->query->get('_token');
-        if ($this->isCsrfTokenValid('delete'.$employee->getId(), $request->getPayload()->getString('_token'))) {
+        if ($this->isCsrfTokenValid('delete'.$employee->getId(), $token)) {
             $entityManager->remove($employee);
             $entityManager->flush();
         }
