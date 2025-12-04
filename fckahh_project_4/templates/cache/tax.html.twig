@@ -1,53 +1,114 @@
-{% extends 'base.html.twig' %}
-
-{% block title %}Caching tax tables{% endblock %}
-
-{% block body %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Caching tax tables</title>
+    <style>
+        table { border-collapse: collapse; width: 100%; margin: 15px 0; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        .section { margin: 30px 0; padding: 20px; border: 1px solid #eee; }
+        h2 { color: #333; border-bottom: 2px solid #4CAF50; padding-bottom: 10px; }
+        h3 { color: #555; margin-top: 20px; }
+        .btn {
+            display: inline-block;
+            padding: 8px 16px;
+            margin: 5px;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+        }
+        .btn:hover {
+            background-color: #45a049;
+        }
+        .btn-warning {
+            background-color: #ff9800;
+        }
+        .btn-warning:hover {
+            background-color: #e68900;
+        }
+        .info {
+            background-color: #f9f9f9;
+            padding: 15px;
+            margin: 15px 0;
+            border-left: 4px solid #4CAF50;
+        }
+        .empty {
+            text-align: center;
+            color: #777;
+            font-style: italic;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
     <h1>Caching tax tables</h1>
-    <div class="alert alert-info">
-        <p>Tax rules are cached in Redis.</p>
-        <p>Cache is automatically updated when rules change and expires after 1 hour.</p>
+    
+    <div class="section">
+        <h2>Cache information</h2>
+        
+        <div class="info">
+            <p>Tax rules are cached in Redis to improve performance.</p>
+            <p>Cache expires after 1 hour and updates automatically when rules change.</p>
+        </div>
+        
+        <p><strong>Cache key:</strong> {{ cache_key }}</p>
+        <p><strong>Rules in cache:</strong> {{ cached_rules|length }}</p>
     </div>
-    <h3>Tax rules (from cache):</h3>
-    <table class="table">
-        <thead>
+
+    <div class="section">
+        <h2>Cached tax rules</h2>
+        
+        {% if cached_rules is not empty %}
+        <table>
             <tr>
                 <th>From</th>
                 <th>To</th>
                 <th>Rate</th>
                 <th>Tax type</th>
             </tr>
-        </thead>
-        <tbody>
-        {% for rule in cached_rules %}
+            {% for rule in cached_rules %}
             <tr>
-                <td>{{ rule.minAmount|number_format(0, '.', ' ') }}</td>
-                <td>{{ rule.maxAmount ? rule.maxAmount|number_format(0, '.', ' ')}}</td>
+                <td>{{ rule.minAmount|default(0)|number_format(0, '.', ' ') }}</td>
+                <td>{{ rule.maxAmount ? rule.maxAmount|number_format(0, '.', ' ') : '∞' }}</td>
                 <td>{{ (rule.rate * 100)|number_format(1) }}%</td>
                 <td>{{ rule.taxType }}</td>
             </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-
-    <div class="mt-4">
-        <a href="{{ path('app_cache_tax_clear') }}" class="btn btn-warning">
-            Clear tax tables cache
-        </a>
+            {% endfor %}
+        </table>
+        {% else %}
+        <div class="empty">
+            <p>No tax rules found in cache.</p>
+            <p>Try warming up the cache.</p>
+        </div>
+        {% endif %}
+    </div>
+    
+    <div class="section">
+        <h2>Cache management</h2>
         
-        <a href="{{ path('app_tax_rule_index') }}" class="btn btn-secondary">
-            Managing tax rules
-        </a>
-        
-        <a href="{{ path('app_cache_tax_warm') }}" class="btn btn-info">
-            Warm up cache (command)
-        </a>
+        <div>
+            <a href="{{ path('app_cache_tax_clear') }}" class="btn btn-warning"
+               onclick="return confirm('Clear tax rules cache?')">
+                Clear cache
+            </a>
+            
+            <a href="{{ path('app_cache_tax_warm') }}" class="btn">
+                Warm up cache
+            </a>
+            
+            <a href="{{ path('app_tax_rule_index') }}" class="btn">
+                Manage tax rules
+            </a>
+        </div>
     </div>
 
-    <div class="mt-4 alert alert-secondary">
-        <h4>Technical info:</h4>
-        <p><strong>Cache key:</strong> {{ cache_key }}</p>
-        <p><strong>Lifetime:</strong> 1 hour</p>
-        <p><strong>Rules amount:</strong> {{ cached_rules|length }}</p>
+    <div style="margin-top: 30px; text-align: center;">
+        <a href="{{ path('app_employee_index') }}">← Back to employees</a> |
+        <a href="{{ path('app_payroll_period_index') }}">Go to periods →</a> |
+        <a href="{{ path('complex_calc') }}">Complex calculations →</a>
     </div>
-{% endblock %}
+</body>
+</html>

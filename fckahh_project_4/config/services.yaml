@@ -26,6 +26,10 @@ services:
     App\MessageHandler\GeneratePayslipHandler:
         arguments:
             $pdfDirectory: '%kernel.project_dir%/var/pdfs'
+            
+    App\Service\Logs:
+        arguments:
+            $auditLogger: '@monolog.logger.audit'
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

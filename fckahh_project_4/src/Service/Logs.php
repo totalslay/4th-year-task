@@ -6,11 +6,11 @@ use Psr\Log\LoggerInterface;
 
 class Logs
 {
-    private $logs;
+    private LoggerInterface $logger;
 
-    public function __construct(LoggerInterface $logs)
+    public function __construct(LoggerInterface $auditLogger)
     {
-        $this->logs = $logs;
+        $this->logger = $auditLogger;
     }
 
     public function logAdjustment(
@@ -32,6 +32,6 @@ class Logs
             'reason' => $changeReason,
             'timestamp' => date('Y-m-d H:i:s')
         ];
-        $this->logs->info('Manual adjustment', $logData);
+        $this->logger->info('Manual adjustment', $logData);
     }
 }

@@ -1,20 +1,135 @@
-{% extends 'base.html.twig' %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Audit Logs</title>
+    <style>
+        table { border-collapse: collapse; width: 100%; margin: 15px 0; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        .section { margin: 30px 0; padding: 20px; border: 1px solid #eee; }
+        h2 { color: #333; border-bottom: 2px solid #4CAF50; padding-bottom: 10px; }
+        .btn {
+            display: inline-block;
+            padding: 8px 16px;
+            margin: 5px;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+        }
+        .btn:hover { background-color: #45a049; }
+        .btn-warning { background-color: #ff9800; }
+        .btn-warning:hover { background-color: #e68900; }
+        .info { 
+            background-color: #f9f9f9; 
+            padding: 15px; 
+            margin: 15px 0; 
+            border-left: 4px solid #4CAF50; 
+        }
+        .empty { text-align: center; color: #777; font-style: italic; padding: 30px; }
+        .log-entry { margin: 10px 0; padding: 10px; background: #f8f9fa; border-radius: 4px; }
+        .log-field { margin: 5px 0; }
+        .log-field strong { color: #555; }
+        form { display: inline; }
+        .timestamp { color: #666; font-size: 0.9em; }
+        .action-edit { color: #2196F3; }
+        .action-delete { color: #f44336; }
+        .action-create { color: #4CAF50; }
+    </style>
+</head>
+<body>
+    <h1>Audit Logs</h1>
+    
+    {% for message in app.flashes('success') %}
+        <div class="info" style="background-color: #dff0d8; border-color: #d6e9c6;">
+            ✓ {{ message }}
+        </div>
+    {% endfor %}
+    
+    {% for message in app.flashes('warning') %}
+        <div class="info" style="background-color: #fcf8e3; border-color: #faebcc;">
+            ⚠ {{ message }}
+        </div>
+    {% endfor %}
+    
+    <div class="section">
+        <h2>Manual adjustments log</h2>
+        
+        <div class="info">
+            <p>All manual adjustments to employees, accruals, deductions, and tax rules are logged here.</p>
+            <p>Log file: <code>{{ log_file }}</code></p>
+            <p>Showing last 50 entries.</p>
+        </div>
+        
+        {% if logs is not empty %}
+            <div>
+                {% for log in logs %}
+                    <div class="log-entry">
+                        <div class="log-field">
+                            <strong>Action:</strong> 
+                            <span class="action-{{ log.action|lower }}">{{ log.action }}</span>
+                        </div>
+                        <div class="log-field">
+                            <strong>Changed by:</strong> {{ log.changed_by }}
+                        </div>
+                        {% if log.employee %}
+                        <div class="log-field">
+                            <strong>Employee:</strong> {{ log.employee }}
+                        </div>
+                        {% endif %}
+                        {% if log.field %}
+                        <div class="log-field">
+                            <strong>Field:</strong> {{ log.field }}
+                            {% if log.old_value or log.new_value %}
+                                ({{ log.old_value|default('empty') }} → {{ log.new_value|default('empty') }})
+                            {% endif %}
+                        </div>
+                        {% endif %}
+                        {% if log.reason %}
+                        <div class="log-field">
+                            <strong>Reason:</strong> {{ log.reason }}
+                        </div>
+                        {% endif %}
+                        <div class="log-field timestamp">
+                            <strong>Time:</strong> {{ log.timestamp }}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="empty">
+                {% if has_logs %}
+                    <p>No audit logs found or log format is not recognized.</p>
+                    <p>Try making some manual adjustments in the system.</p>
+                {% else %}
+                    <p>No audit log file found or it's empty.</p>
+                    <p>Make some manual adjustments to see logs here.</p>
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
+    
+    <div class="section">
+        <h2>Log management</h2>
+        
+        <div>
+            <form method="post" action="{{ path('app_audit_logs_clear') }}" 
+                  onsubmit="return confirm('Are you sure you want to clear all audit logs?');">
+                <button type="submit" class="btn btn-warning">Clear all logs</button>
+            </form>
+            
+            <a href="{{ path('app_employee_index') }}" class="btn">Employees</a>
+            <a href="{{ path('app_payroll_period_index') }}" class="btn">Payroll periods</a>
+            <a href="{{ path('app_tax_rule_index') }}" class="btn">Tax rules</a>
+        </div>
+    </div>
 
-{% block title %}Hello AuditLogController!{% endblock %}
-
-{% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
-
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
-
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>E:/fckahh_project/fckahh_project_4/src/Controller/AuditLogController.php</code></li>
-        <li>Your template at <code>E:/fckahh_project/fckahh_project_4/templates/audit_log/index.html.twig</code></li>
-    </ul>
-</div>
-{% endblock %}
+    <div style="margin-top: 30px; text-align: center;">
+        <a href="{{ path('app_employee_index') }}">← Back to employees</a> |
+        <a href="{{ path('complex_calc') }}">Complex calculations →</a> |
+        <a href="{{ path('app_cache_tax') }}">Cache management →</a>
+    </div>
+</body>
+</html>
