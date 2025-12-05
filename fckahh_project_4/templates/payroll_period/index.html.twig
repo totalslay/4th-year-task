@@ -1,18 +1,20 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}PayrollPeriod index{% endblock %}
+{% block title %}Payroll Periods{% endblock %}
 
 {% block body %}
-    <h1>PayrollPeriod index</h1>
+    <h1>Payroll Periods</h1>
+
+    <a href="{{ path('app_payroll_period_new') }}" class="btn">Create new</a>
 
     <table class="table">
         <thead>
             <tr>
                 <th>Id</th>
-                <th>StartDate</th>
-                <th>EndDate</th>
+                <th>Start Date</th>
+                <th>End Date</th>
                 <th>Status</th>
-                <th>actions</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -21,19 +23,36 @@
                 <td>{{ payroll_period.id }}</td>
                 <td>{{ payroll_period.startDate ? payroll_period.startDate|date('Y-m-d') : '' }}</td>
                 <td>{{ payroll_period.endDate ? payroll_period.endDate|date('Y-m-d') : '' }}</td>
-                <td>{{ payroll_period.status }}</td>
                 <td>
-                    <a href="{{ path('app_payroll_period_show', {'id': payroll_period.id}) }}">show</a>
-                    <a href="{{ path('app_payroll_period_edit', {'id': payroll_period.id}) }}">edit</a>
+                    {% if payroll_period.status == 'DRAFT' %}
+                        DRAFT
+                    {% elseif payroll_period.status == 'APPROVED' %}
+                        APPROVED
+                    {% elseif payroll_period.status == 'PROCESSED' %}
+                        PROCESSED
+                    {% else %}
+                        {{ payroll_period.status }}
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="{{ path('app_payroll_period_show', {'id': payroll_period.id}) }}" class="btn btn-sm">Show</a>
+                    
+                    {% if payroll_period.canEdit() %}
+                        <a href="{{ path('app_payroll_period_edit', {'id': payroll_period.id}) }}" class="btn btn-sm">Edit</a>
+                    {% endif %}
                 </td>
             </tr>
         {% else %}
             <tr>
-                <td colspan="5">no records found</td>
+                <td colspan="5">No records found</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
 
-    <a href="{{ path('app_payroll_period_new') }}">Create new</a>
+    <div>
+        <a href="{{ path('app_employee_index') }}">Employees</a> |
+        <a href="{{ path('app_tax_rule_index') }}">Tax Rules</a> |
+        <a href="{{ path('complex_calc') }}">Calculations</a>
+    </div>
 {% endblock %}

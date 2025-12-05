@@ -1,34 +1,79 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}PayrollPeriod{% endblock %}
+{% block title %}Payroll Period {{ payroll_period.id }}{% endblock %}
 
 {% block body %}
-    <h1>PayrollPeriod</h1>
+    <h1>Payroll Period</h1>
 
-    <table class="table">
+    <table>
         <tbody>
             <tr>
                 <th>Id</th>
                 <td>{{ payroll_period.id }}</td>
             </tr>
             <tr>
-                <th>StartDate</th>
+                <th>Start Date</th>
                 <td>{{ payroll_period.startDate ? payroll_period.startDate|date('Y-m-d') : '' }}</td>
             </tr>
             <tr>
-                <th>EndDate</th>
+                <th>End Date</th>
                 <td>{{ payroll_period.endDate ? payroll_period.endDate|date('Y-m-d') : '' }}</td>
             </tr>
             <tr>
                 <th>Status</th>
-                <td>{{ payroll_period.status }}</td>
+                <td>
+                    {% if payroll_period.status == 'DRAFT' %}
+                        DRAFT
+                    {% elseif payroll_period.status == 'APPROVED' %}
+                        APPROVED
+                    {% elseif payroll_period.status == 'PROCESSED' %}
+                        PROCESSED
+                    {% else %}
+                        {{ payroll_period.status }}
+                    {% endif %}
+                </td>
             </tr>
         </tbody>
     </table>
 
-    <a href="{{ path('app_payroll_period_index') }}">back to list</a>
+    <h3>Workflow Actions</h3>
+    
+    {% if payroll_period.canApprove() %}
+        <form method="post" action="{{ path('app_payroll_period_approve', {'id': payroll_period.id}) }}">
+            <input type="hidden" name="_token" value="{{ csrf_token('approve' ~ payroll_period.id) }}">
+            <button type="submit" onclick="return confirm('Approve this payroll period?');">
+                Approve
+            </button>
+        </form>
+    {% endif %}
+    
+    {% if payroll_period.canProcess() %}
+        <form method="post" action="{{ path('app_payroll_period_process', {'id': payroll_period.id}) }}">
+            <input type="hidden" name="_token" value="{{ csrf_token('process' ~ payroll_period.id) }}">
+            <button type="submit" onclick="return confirm('Process this payroll period? This will finalize it.');">
+                Process
+            </button>
+        </form>
+    {% endif %}
 
-    <a href="{{ path('app_payroll_period_edit', {'id': payroll_period.id}) }}">edit</a>
+    <p>Workflow: DRAFT → APPROVED → PROCESSED</p>
+    <p>Current: {{ payroll_period.status }}</p>
 
-    {{ include('payroll_period/_delete_form.html.twig') }}
+    <div>
+        <a href="{{ path('app_payroll_period_index') }}">Back to list</a>
+        
+        {% if payroll_period.canEdit() %}
+            <a href="{{ path('app_payroll_period_edit', {'id': payroll_period.id}) }}">Edit</a>
+        {% endif %}
+    </div>
+
+    {% if payroll_period.canDelete() %}
+        {{ include('payroll_period/_delete_form.html.twig') }}
+    {% endif %}
+    
+    <div>
+        <a href="{{ path('app_employee_index') }}">Employees</a> |
+        <a href="{{ path('app_tax_rule_index') }}">Tax Rules</a> |
+        <a href="{{ path('complex_calc') }}">Calculations</a>
+    </div>
 {% endblock %}

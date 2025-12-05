@@ -11,6 +11,10 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: PayrollPeriodRepository::class)]
 class PayrollPeriod
 {
+    public const STATUS_DRAFT = 'DRAFT';
+    public const STATUS_APPROVED = 'APPROVED';
+    public const STATUS_PROCESSED = 'PROCESSED';
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -144,5 +148,49 @@ class PayrollPeriod
         return $this;
     }
 
-    
+    public function approve():void
+    {
+        if($this->status !== self::STATUS_DRAFT) {
+            throw new \RuntimeException('Only draft periods can be approved');
+        }
+        $this->status = self::STATUS_APPROVED;
+    }
+
+    public function process():void
+    {
+        if($this->status !== self::STATUS_APPROVED) {
+            throw new \RuntimeException('Only approved periods can be processed');
+        }
+        $this->status = self::STATUS_PROCESSED;
+    }
+
+    public static function getAvailableStatuses():array
+    {
+        return[
+            self::STATUS_DRAFT => 'Draft',
+            self::STATUS_APPROVED => 'Approved',
+            self::STATUS_PROCESSED => 'Processed',
+        ];
+    }
+
+    public function canApprove():bool
+    {
+        return $this->status === self::STATUS_DRAFT;
+    }
+
+    public function canProcess():bool
+    {
+        return $this->status === self::STATUS_APPROVED;
+    }
+
+    public function canEdit():bool
+    {
+        return $this->status === self::STATUS_DRAFT;
+    }
+
+    public function canDelete():bool
+    {
+        return $this->status === self::STATUS_DRAFT;
+    }
+
 }

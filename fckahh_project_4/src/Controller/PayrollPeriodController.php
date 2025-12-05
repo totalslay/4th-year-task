@@ -81,4 +81,67 @@ final class PayrollPeriodController extends AbstractController
 
         return $this->redirectToRoute('app_payroll_period_index', [], Response::HTTP_SEE_OTHER);
     }
+
+    #[Route('/{id}/approve', name: 'app_payroll_period_approve', methods: ['POST'])]
+    public function approve(Request $request, PayrollPeriod $payrollPeriod, EntityManagerInterface $entityManager):Response
+    {
+        if ($this->isCsrfTokenValid('approve'.$payrollPeriod->getId(), $request->request->get('_token'))) {
+            try {
+                $payrollPeriod->approve();
+                $entityManager->flush();
+                $this->addFlash('success', 'Payroll period approved successfully');
+            } catch (\RuntimeException $e) {
+                $this->addFlash('error', $e->getMessage());
+            }
+        }
+        return $this->redirectToRoute('app_payroll_period_show', ['id' => $payrollPeriod->getId()]);
+    }
+
+    #[Route('/{id}/process', name: 'app_payroll_period_process', methods: ['POST'])]
+    public function process(Request $request, PayrollPeriod $payrollPeriod, EntityManagerInterface $entityManager): Response
+    {
+        if ($this->isCsrfTokenValid('process'.$payrollPeriod->getId(), $request->request->get('_token'))) {
+            try {
+                $payrollPeriod->process();
+                $entityManager->flush();
+                $this->addFlash('success', 'Payroll period processed successfully');
+            } catch (\RuntimeException $e) {
+                $this->addFlash('error', $e->getMessage());
+            }
+        }
+
+        return $this->redirectToRoute('app_payroll_period_show', ['id' => $payrollPeriod->getId()]);
+    }
+
+    #[Route('/{id}/cancel', name: 'app_payroll_period_cancel', methods: ['POST'])]
+    public function cancel(Request $request, PayrollPeriod $payrollPeriod, EntityManagerInterface $entityManager): Response
+    {
+        if ($this->isCsrfTokenValid('cancel'.$payrollPeriod->getId(), $request->request->get('_token'))) {
+            try {
+                $payrollPeriod->cancel();
+                $entityManager->flush();
+                $this->addFlash('success', 'Payroll period cancelled successfully');
+            } catch (\RuntimeException $e) {
+                $this->addFlash('error', $e->getMessage());
+            }
+        }
+
+        return $this->redirectToRoute('app_payroll_period_show', ['id' => $payrollPeriod->getId()]);
+    }
+
+    #[Route('/{id}/reopen', name: 'app_payroll_period_reopen', methods: ['POST'])]
+    public function reopen(Request $request, PayrollPeriod $payrollPeriod, EntityManagerInterface $entityManager): Response
+    {
+        if ($this->isCsrfTokenValid('reopen'.$payrollPeriod->getId(), $request->request->get('_token'))) {
+            try {
+                $payrollPeriod->reopen();
+                $entityManager->flush();
+                $this->addFlash('success', 'Payroll period reopened successfully');
+            } catch (\RuntimeException $e) {
+                $this->addFlash('error', $e->getMessage());
+            }
+        }
+
+        return $this->redirectToRoute('app_payroll_period_show', ['id' => $payrollPeriod->getId()]);
+    }
 }
