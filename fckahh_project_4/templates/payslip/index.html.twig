@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Payslips{% endblock %}
+
+{% block body %}
+    <h1>Generated Payslips</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Employee</th>
+                <th>PDF File</th>
+                <th>Generated At</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for payslip in payslips %}
+            <tr>
+                <td>{{ payslip.id }}</td>
+                <td>{{ payslip.employee.fullName }}</td>
+                <td>{{ payslip.pdfFilename }}</td>
+                <td>{{ payslip.generatedAt ? payslip.generatedAt|date('Y-m-d H:i:s') : '' }}</td>
+                <td>
+                    <a href="{{ path('app_payslip_show', {'id': payslip.id}) }}" class="btn btn-sm">Show</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="5">No payslips found. Generate some first!</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <div>
+        <a href="{{ path('app_async_tasks') }}" class="btn">Generate New Payslips</a>
+        <a href="{{ path('app_employee_index') }}">Employees</a> |
+        <a href="{{ path('app_payroll_period_index') }}">Payroll Periods</a>
+    </div>
+{% endblock %}

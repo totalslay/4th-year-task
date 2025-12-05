@@ -1,0 +1,40 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Payslip {{ payslip.id }}{% endblock %}
+
+{% block body %}
+    <h1>Payslip</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ payslip.id }}</td>
+            </tr>
+            <tr>
+                <th>Employee</th>
+                <td>{{ payslip.employee.fullName }}</td>
+            </tr>
+            <tr>
+                <th>PDF File</th>
+                <td>{{ payslip.pdfFilename }}</td>
+            </tr>
+            <tr>
+                <th>Generated At</th>
+                <td>{{ payslip.generatedAt ? payslip.generatedAt|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div>
+        {% set pdfPath = 'var/pdf/' ~ payslip.pdfFilename %}
+        {% if file_exists(pdfPath) %}
+            <a href="{{ path('app_payslip_download', {'id': payslip.id}) }}" class="btn">Download PDF</a>
+            <a href="{{ path('app_payslip_download', {'id': payslip.id}) }}" target="_blank" class="btn">View PDF</a>
+        {% else %}
+            <p>PDF file not found: {{ pdfPath }}</p>
+        {% endif %}
+        
+        <a href="{{ path('app_payslip_index') }}" class="btn">Back to list</a>
+    </div>
+{% endblock %}

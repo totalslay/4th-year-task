@@ -78,4 +78,16 @@ final class PayslipController extends AbstractController
 
         return $this->redirectToRoute('app_payslip_index', [], Response::HTTP_SEE_OTHER);
     }
+
+    #[Route('/download/{id}', name: 'app_payslip_download', methods: ['GET'])]
+    public function download(Payslip $payslip): Response
+    {
+        $pdfDirectory = $this->getParameter('pdf_directory');
+    $pdfPath = $pdfDirectory . '/' . $payslip->getPdfFilename();
+    
+    if (!file_exists($pdfPath)) {
+        throw $this->createNotFoundException('PDF file not found: ' . $pdfPath);
+    }
+    return $this->file($pdfPath);
+    }
 }

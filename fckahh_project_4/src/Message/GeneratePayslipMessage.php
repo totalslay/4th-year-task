@@ -12,7 +12,7 @@ class GeneratePayslipMessage
         $this->periodId = $periodId;
     }
 
-    public function getEmployee(): int
+    public function getEmployeeId(): int
     {
         return $this->employeeId;
     }

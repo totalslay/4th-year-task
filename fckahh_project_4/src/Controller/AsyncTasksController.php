@@ -17,7 +17,7 @@ final class AsyncTasksController extends AbstractController
     public function index(PayrollPeriodRepository $periodRep, EmployeeRepository $employeeRep): Response
     {
         $periods = $periodRep->findAll();
-        $employees = $employeeRep->findBy(['isActive' => true]);
+        $employees = $employeeRep->findAll();
         return $this->render('async_tasks/index.html.twig', [
             'periods' => $periods,
             'employee_count' => count($employees),
@@ -28,9 +28,9 @@ final class AsyncTasksController extends AbstractController
     #[Route('/async/generate-all-payslips/{periodId}', name: 'app_async_generate_all_payslips')]
     public function generatateAllPayslips(int $periodId, EmployeeRepository $employeeRep, MessageBusInterface $messageBus):Response
     {
-        $employees = $employeeRep->findBy(['isActive' => true]);
+        $employees = $employeeRep->findAll();
         foreach ($employees as $employee) {
-            $message = new GeneratePayslipMessage($employee->id, $periodId);
+            $message = new GeneratePayslipMessage($employee->getId(), $periodId);
             $messageBus->dispatch($message);
         }
 

@@ -21,11 +21,11 @@ services:
             - '../src/Kernel.php'
     App\MessageHandler\GeneratePayrollReportHandler:
         arguments:
-            $pdfDirectory: '%kernel.project_dir%/var/pdfs'
+            $pdfDirectory: '%kernel.project_dir%/var/pdf'
 
     App\MessageHandler\GeneratePayslipHandler:
         arguments:
-            $pdfDirectory: '%kernel.project_dir%/var/pdfs'
+            $pdfDirectory: '%kernel.project_dir%/var/pdf'
             
     App\Service\Logs:
         arguments:
