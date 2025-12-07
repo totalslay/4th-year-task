@@ -15,24 +15,24 @@ class PayrollPeriodType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('startDate', DateType::class,[
-                'widget' => 'single_text'
-            ])
-            ->add('endDate',DateType::class,[
+            ->add('startDate', DateType::class, [
                 'widget' => 'single_text',
-                'constraints' =>[
+            ])
+            ->add('endDate', DateType::class, [
+                'widget' => 'single_text',
+                'constraints' => [
                     new GreaterThan([
                         'propertyPath' => 'parent.all[startDate].data',
-                        'message' => 'End date must be later than start date!'
-                    ])
-                ]
+                        'message' => 'End date must be later than start date!',
+                    ]),
+                ],
             ])
-            ->add('status', ChoiceType::class,[
+            ->add('status', ChoiceType::class, [
                 'choices' => [
                     'Draft' => 'DRAFT',
                     'Approved' => 'APPROVED',
-                    'Processed' => 'PROCESSED'
-                ]
+                    'Processed' => 'PROCESSED',
+                ],
             ])
         ;
     }

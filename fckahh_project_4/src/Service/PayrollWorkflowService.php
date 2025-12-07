@@ -16,28 +16,34 @@ class PayrollWorkflowService
 
     public function approve(PayrollPeriod $period): bool
     {
-        if ($this->workflow->can($period, 'to_approved')){
-            $this->workflow->apply($period, 'to_approved'); 
+        if ($this->workflow->can($period, 'to_approved')) {
+            $this->workflow->apply($period, 'to_approved');
+
             return true;
         }
+
         return false;
     }
 
     public function process(PayrollPeriod $period): bool
     {
-        if ($this->workflow->can($period, 'to_processed')){
-            $this->workflow->apply($period, 'to_processed'); 
+        if ($this->workflow->can($period, 'to_processed')) {
+            $this->workflow->apply($period, 'to_processed');
+
             return true;
         }
+
         return false;
     }
 
     public function toDraft(PayrollPeriod $period): bool
     {
-        if ($this->workflow->can($period, 'back_to_draft')){
-            $this->workflow->apply($period, 'back_to_draft'); 
+        if ($this->workflow->can($period, 'back_to_draft')) {
+            $this->workflow->apply($period, 'back_to_draft');
+
             return true;
         }
+
         return false;
     }
 

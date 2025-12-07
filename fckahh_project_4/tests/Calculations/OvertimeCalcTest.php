@@ -12,14 +12,14 @@ class OvertimeCalcTest extends TestCase
     {
         $mockData = [
             ['fullName' => 'Abobus Kekeke', 'amount' => 15000, 'type' => 'OVERTIME'],
-            ['fullName' => 'Oleg Mongol', 'amount' => 20000, 'type' => 'OVERTIME_NIGHT']
+            ['fullName' => 'Oleg Mongol', 'amount' => 20000, 'type' => 'OVERTIME_NIGHT'],
         ];
-        
+
         $repository = $this->createMock(AccrualRepository::class);
         $repository->method('findOvertimeByPeriod')
             ->with(1)
             ->willReturn($mockData);
-        
+
         $calc = new OvertimeCalc($repository);
         $result = $calc->getOvertimeByPeriod(1);
         $this->assertEquals($mockData, $result);
@@ -29,13 +29,13 @@ class OvertimeCalcTest extends TestCase
     {
         $mockData = [
             ['id' => 1, 'fullName' => 'Abobus Kekeke', 'totalOvertime' => 25000],
-            ['id' => 2, 'fullName' => 'Oleg Mongol', 'totalOvertime' => 30000]
+            ['id' => 2, 'fullName' => 'Oleg Mongol', 'totalOvertime' => 30000],
         ];
         $repository = $this->createMock(AccrualRepository::class);
         $repository->method('findEmployeesOvertime')
             ->with(1)
             ->willReturn($mockData);
-        
+
         $calc = new OvertimeCalc($repository);
         $result = $calc->getHighOvertimeEmployees(1);
         $this->assertEquals($mockData, $result);

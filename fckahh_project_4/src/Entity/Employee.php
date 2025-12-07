@@ -51,7 +51,6 @@ class Employee
     #[ORM\OneToMany(targetEntity: Adjustment::class, mappedBy: 'employee')]
     private Collection $adjustments;
 
-
     public function __construct()
     {
         $this->accruals = new ArrayCollection();
@@ -232,6 +231,4 @@ class Employee
 
         return $this;
     }
-
-    
 }

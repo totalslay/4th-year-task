@@ -18,13 +18,13 @@ class TaxRuleRepository extends ServiceEntityRepository
         parent::__construct($registry, TaxRule::class);
     }
 
-    public function FindCacheTaxRule(CacheInterface $cache):array
+    public function FindCacheTaxRule(CacheInterface $cache): array
     {
         return $cache->get('tax_rules_cache', function (ItemInterface $item) {
             $item->expiresAfter(3600);
-            
+
             return $this->createQueryBuilder('t')
-                ->andWhere('t.taxType = :taxType') 
+                ->andWhere('t.taxType = :taxType')
                 ->setParameter('taxType', 'INCOME_TAX')
                 ->orderBy('t.minAmount', 'ASC')
                 ->getQuery()
@@ -35,7 +35,7 @@ class TaxRuleRepository extends ServiceEntityRepository
     public function findProgressiveTaxRules(): array
     {
         return $this->createQueryBuilder('t')
-            ->andWhere('t.taxType = :taxType') 
+            ->andWhere('t.taxType = :taxType')
             ->setParameter('taxType', 'INCOME_TAX')
             ->orderBy('t.minAmount', 'ASC')
             ->getQuery()

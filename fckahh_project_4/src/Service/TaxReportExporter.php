@@ -2,7 +2,6 @@
 
 namespace App\Service;
 
-use App\Entity\Employee;
 use App\Entity\PayrollPeriod;
 use App\Repository\AccrualRepository;
 use App\Repository\DeductionRepository;
@@ -21,7 +20,7 @@ class TaxReportExporter
         $this->deductionRep = $deductionRep;
     }
 
-    public function exportTaxReport(PayrollPeriod $period):string
+    public function exportTaxReport(PayrollPeriod $period): string
     {
         $employees = $this->employeeRep->findAll();
         $csvData = [];
@@ -32,27 +31,27 @@ class TaxReportExporter
             'Tax',
             'Pension tax',
             'Other deductions',
-            'Taxable base'
+            'Taxable base',
         ];
 
         foreach ($employees as $employee) {
             $accruals = $this->accrualRep->findBy([
                 'employee' => $employee,
-                'period' => $period
+                'period' => $period,
             ]);
             $deductions = $this->deductionRep->findBy([
                 'employee' => $employee,
-                'period' => $period
+                'period' => $period,
             ]);
 
-            $totalAccruals = array_sum(array_map(fn($a) => $a->getAmount(), $accruals));
-            $totalDeductions = array_sum(array_map(fn($d) => $d->getAmount(), $deductions));
-            $taxDeductions = array_filter($deductions, fn($d) => $d->getType() === 'INCOME_TAX');
-            $pensionDeductions = array_filter($deductions, fn($d) => $d->getType() === 'PENSION');
-            $otherDeductions = array_filter($deductions, fn($d) => !in_array($d->getType(), ['INCOME_TAX', 'PENSION']));
-            $taxAmount = array_sum(array_map(fn($d) => $d->getAmount(), $taxDeductions));
-            $pensionAmount = array_sum(array_map(fn($d) => $d->getAmount(), $pensionDeductions));
-            $otherAmount = array_sum(array_map(fn($d) => $d->getAmount(), $otherDeductions));
+            $totalAccruals = array_sum(array_map(fn ($a) => $a->getAmount(), $accruals));
+            $totalDeductions = array_sum(array_map(fn ($d) => $d->getAmount(), $deductions));
+            $taxDeductions = array_filter($deductions, fn ($d) => 'INCOME_TAX' === $d->getType());
+            $pensionDeductions = array_filter($deductions, fn ($d) => 'PENSION' === $d->getType());
+            $otherDeductions = array_filter($deductions, fn ($d) => !\in_array($d->getType(), ['INCOME_TAX', 'PENSION'], true));
+            $taxAmount = array_sum(array_map(fn ($d) => $d->getAmount(), $taxDeductions));
+            $pensionAmount = array_sum(array_map(fn ($d) => $d->getAmount(), $pensionDeductions));
+            $otherAmount = array_sum(array_map(fn ($d) => $d->getAmount(), $otherDeductions));
 
             $csvData[] = [
                 $employee->getTIN(),
@@ -68,7 +67,7 @@ class TaxReportExporter
         return $this->arrayToCsv($csvData);
     }
 
-    private function arrayToCsv(array $data):string
+    private function arrayToCsv(array $data): string
     {
         $output = fopen('php://temp', 'r+');
         fwrite($output, "\xEF\xBB\xBF");

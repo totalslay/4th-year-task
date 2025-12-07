@@ -20,7 +20,7 @@ class Logs
         ?string $fieldName = null,
         ?string $oldValue = null,
         ?string $newValue = null,
-        ?string $changeReason =  null
+        ?string $changeReason = null,
     ): void {
         $logData = [
             'action' => $action,
@@ -28,9 +28,9 @@ class Logs
             'employee' => $emplyeeName,
             'field' => $fieldName,
             'old_value' => $oldValue,
-            'new_value' =>$newValue,
+            'new_value' => $newValue,
             'reason' => $changeReason,
-            'timestamp' => date('Y-m-d H:i:s')
+            'timestamp' => date('Y-m-d H:i:s'),
         ];
         $this->logger->info('Manual adjustment', $logData);
     }

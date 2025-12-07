@@ -148,49 +148,48 @@ class PayrollPeriod
         return $this;
     }
 
-    public function approve():void
+    public function approve(): void
     {
-        if($this->status !== self::STATUS_DRAFT) {
+        if (self::STATUS_DRAFT !== $this->status) {
             throw new \RuntimeException('Only draft periods can be approved');
         }
         $this->status = self::STATUS_APPROVED;
     }
 
-    public function process():void
+    public function process(): void
     {
-        if($this->status !== self::STATUS_APPROVED) {
+        if (self::STATUS_APPROVED !== $this->status) {
             throw new \RuntimeException('Only approved periods can be processed');
         }
         $this->status = self::STATUS_PROCESSED;
     }
 
-    public static function getAvailableStatuses():array
+    public static function getAvailableStatuses(): array
     {
-        return[
+        return [
             self::STATUS_DRAFT => 'Draft',
             self::STATUS_APPROVED => 'Approved',
             self::STATUS_PROCESSED => 'Processed',
         ];
     }
 
-    public function canApprove():bool
+    public function canApprove(): bool
     {
-        return $this->status === self::STATUS_DRAFT;
+        return self::STATUS_DRAFT === $this->status;
     }
 
-    public function canProcess():bool
+    public function canProcess(): bool
     {
-        return $this->status === self::STATUS_APPROVED;
+        return self::STATUS_APPROVED === $this->status;
     }
 
-    public function canEdit():bool
+    public function canEdit(): bool
     {
-        return $this->status === self::STATUS_DRAFT;
+        return self::STATUS_DRAFT === $this->status;
     }
 
-    public function canDelete():bool
+    public function canDelete(): bool
     {
-        return $this->status === self::STATUS_DRAFT;
+        return self::STATUS_DRAFT === $this->status;
     }
-
 }

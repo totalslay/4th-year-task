@@ -83,11 +83,12 @@ final class PayslipController extends AbstractController
     public function download(Payslip $payslip): Response
     {
         $pdfDirectory = $this->getParameter('pdf_directory');
-    $pdfPath = $pdfDirectory . '/' . $payslip->getPdfFilename();
-    
-    if (!file_exists($pdfPath)) {
-        throw $this->createNotFoundException('PDF file not found: ' . $pdfPath);
-    }
-    return $this->file($pdfPath);
+        $pdfPath = $pdfDirectory.'/'.$payslip->getPdfFilename();
+
+        if (!file_exists($pdfPath)) {
+            throw $this->createNotFoundException('PDF file not found: '.$pdfPath);
+        }
+
+        return $this->file($pdfPath);
     }
 }

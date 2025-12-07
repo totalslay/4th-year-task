@@ -5,12 +5,12 @@ namespace App\Controller;
 use App\Entity\Adjustment;
 use App\Form\AdjustmentType;
 use App\Repository\AdjustmentRepository;
+use App\Service\Logs;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use App\Service\Logs;
 
 #[Route('/adjustment')]
 final class AdjustmentController extends AbstractController
@@ -71,7 +71,7 @@ final class AdjustmentController extends AbstractController
     #[Route('/{id}/edit', name: 'app_adjustment_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Adjustment $adjustment, EntityManagerInterface $entityManager): Response
     {
-                $oldFieldName = $adjustment->getChangedFieldName();
+        $oldFieldName = $adjustment->getChangedFieldName();
         $oldOldValue = $adjustment->getOldValue();
         $oldNewValue = $adjustment->getNewValue();
         $oldReason = $adjustment->getChangeReason();
@@ -90,7 +90,6 @@ final class AdjustmentController extends AbstractController
                 "Старое: $oldOldValue → Новое: {$adjustment->getOldValue()}",
                 "Старое: $oldNewValue → Новое: {$adjustment->getNewValue()}",
                 "Старое: $oldReason → Новое: {$adjustment->getChangeReason()}"
-
             );
 
             return $this->redirectToRoute('app_adjustment_index', [], Response::HTTP_SEE_OTHER);

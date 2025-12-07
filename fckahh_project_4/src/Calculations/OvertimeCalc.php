@@ -3,6 +3,7 @@
 namespace App\Calculations;
 
 use App\Repository\AccrualRepository;
+
 class OvertimeCalc
 {
     private $accrualRep;
@@ -12,12 +13,12 @@ class OvertimeCalc
         $this->accrualRep = $accrualRep;
     }
 
-    public function getOvertimeByPeriod(int $periodId):array
+    public function getOvertimeByPeriod(int $periodId): array
     {
         return $this->accrualRep->findOvertimeByPeriod($periodId);
     }
 
-    public function getHighOvertimeEmployees(int $periodId):array
+    public function getHighOvertimeEmployees(int $periodId): array
     {
         return $this->accrualRep->findEmployeesOvertime($periodId);
     }

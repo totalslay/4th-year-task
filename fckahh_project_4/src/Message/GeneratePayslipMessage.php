@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Message;
+
 class GeneratePayslipMessage
 {
     private int $employeeId;

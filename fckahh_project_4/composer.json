@@ -4,7 +4,7 @@
     "minimum-stability": "stable",
     "prefer-stable": true,
     "require": {
-        "php": ">=8.1",
+        "php": ">=8.3",
         "ext-ctype": "*",
         "ext-iconv": "*",
         "doctrine/annotations": "^2.0",
@@ -29,13 +29,11 @@
         "tecnickcom/tcpdf": "^6.10"
     },
     "require-dev": {
-        "friendsofphp/php-cs-fixer": "*",
-        "phpstan/phpstan": "*",
+        "phpstan/phpstan": "^2.1",
         "phpunit/phpunit": "*",
         "symfony/browser-kit": "6.4.*",
         "symfony/css-selector": "6.4.*",
         "symfony/maker-bundle": "^1.64",
-        "symfony/test-pack": "*",
         "symplify/easy-coding-standard": "*"
     },
     "config": {
@@ -66,38 +64,24 @@
         "symfony/polyfill-php81": "*"
     },
     "scripts": {
-        "test": "phpunit",
-        "test:coverage": "phpunit --coverage-html coverage",
-        "phpstan": "phpstan analyse",
-        "phpcs": "php-cs-fixer fix --dry-run --diff",
-        "phpcs:fix": "php-cs-fixer fix",
-        "lint": [
-            "@phpstan",
-            "@phpcs"
-        ],
-        "ci": [
-            "@phpcs",
-            "@phpstan",
-            "@test"
-        ],
         "auto-scripts": {
-            "cache:clear": "symfony-cmd",
-            "assets:install %PUBLIC_DIR%": "symfony-cmd"
-        },
+        "cache:clear": "symfony-cmd",
+        "assets:install %PUBLIC_DIR%": "symfony-cmd"
+    },
         "post-install-cmd": [
             "@auto-scripts"
-        ],
+    ],
         "post-update-cmd": [
             "@auto-scripts"
+    ],
+        "cs-fix": "php-cs-fixer fix",
+        "cs-check": "php-cs-fixer fix --dry-run --diff",
+        "stan": "phpstan analyse --memory-limit=2G",
+        "test": "phpunit",
+        "ci": [
+            "@cs-check",
+            "@stan",
+            "@test"
         ]
-    },
-    "conflict": {
-        "symfony/symfony": "*"
-    },
-    "extra": {
-        "symfony": {
-            "allow-contrib": false,
-            "require": "6.4.*"
-        }
     }
 }

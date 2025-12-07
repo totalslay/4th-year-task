@@ -54,7 +54,7 @@ final class EmployeeController extends AbstractController
     public function edit(Request $request, Employee $employee, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(EmployeeType::class, $employee, [
-            'method' => 'PUT'
+            'method' => 'PUT',
         ]);
         $form->handleRequest($request);
 
@@ -66,7 +66,7 @@ final class EmployeeController extends AbstractController
 
         return $this->render('employee/edit.html.twig', [
             'employee' => $employee,
-            'form' => $form
+            'form' => $form,
         ]);
     }
 

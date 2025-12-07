@@ -18,15 +18,16 @@ final class AsyncTasksController extends AbstractController
     {
         $periods = $periodRep->findAll();
         $employees = $employeeRep->findAll();
+
         return $this->render('async_tasks/index.html.twig', [
             'periods' => $periods,
-            'employee_count' => count($employees),
-            'period_count' => count($periods)
-        ]);   
+            'employee_count' => \count($employees),
+            'period_count' => \count($periods),
+        ]);
     }
 
     #[Route('/async/generate-all-payslips/{periodId}', name: 'app_async_generate_all_payslips')]
-    public function generatateAllPayslips(int $periodId, EmployeeRepository $employeeRep, MessageBusInterface $messageBus):Response
+    public function generatateAllPayslips(int $periodId, EmployeeRepository $employeeRep, MessageBusInterface $messageBus): Response
     {
         $employees = $employeeRep->findAll();
         foreach ($employees as $employee) {
@@ -34,16 +35,18 @@ final class AsyncTasksController extends AbstractController
             $messageBus->dispatch($message);
         }
 
-        $this->addFlash('success', "Asynchronous generation of" . count($employees) . "payslips has been started");
+        $this->addFlash('success', 'Asynchronous generation of'.\count($employees).'payslips has been started');
+
         return $this->redirectToRoute('app_async_tasks');
     }
 
     #[Route('/async/generate-report/{periodId}', name: 'app_async_generate_report')]
-    public function generateReport(int $periodId, MessageBusInterface $messageBus):Response
+    public function generateReport(int $periodId, MessageBusInterface $messageBus): Response
     {
         $message = new GeneratePayrollReportMessage($periodId);
         $messageBus->dispatch($message);
         $this->addFlash('success', 'Asynchronous payroll generation started');
+
         return $this->redirectToRoute('app_async_tasks');
     }
 }

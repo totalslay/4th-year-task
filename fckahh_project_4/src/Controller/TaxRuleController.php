@@ -54,7 +54,7 @@ final class TaxRuleController extends AbstractController
     public function edit(Request $request, TaxRule $taxRule, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(TaxRuleType::class, $taxRule, [
-            'method' => 'PUT'
+            'method' => 'PUT',
         ]);
         $form->handleRequest($request);
 
