@@ -23,7 +23,7 @@ class TaxReportExporter
 
     public function exportTaxReport(PayrollPeriod $period):string
     {
-        $employees = $this->employeeRep->findBy(['isActive' => true]);
+        $employees = $this->employeeRep->findAll();
         $csvData = [];
         $csvData[] = [
             'TIN',
@@ -40,8 +40,8 @@ class TaxReportExporter
                 'employee' => $employee,
                 'period' => $period
             ]);
-            $deductions = $this->accrualRep->findBy([
-                'enployee' => $employee,
+            $deductions = $this->deductionRep->findBy([
+                'employee' => $employee,
                 'period' => $period
             ]);
 
@@ -71,6 +71,7 @@ class TaxReportExporter
     private function arrayToCsv(array $data):string
     {
         $output = fopen('php://temp', 'r+');
+        fwrite($output, "\xEF\xBB\xBF");
         foreach ($data as $row) {
             fputcsv($output, $row, ';');
         }

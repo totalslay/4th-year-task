@@ -61,11 +61,21 @@ class TimeSheetImporter
 
     private function createAccrual(Employee $employee, PayrollPeriod $period, string $type, float $amount):void
     {
-        $accrual = new Accrual();
-        $accrual->setEmployee($employee);
-        $accrual->setPeriod($period);
-        $accrual->setType($type);
-        $accrual->setAmount($amount);
-        $this->entityManager->persist($accrual);
+        $existing = $this->entityManager->getRepository(Accrual::class)->findOneBy([
+            'employee' => $employee,
+            'period' => $period,
+            'type' => $type
+        ]);
+        
+        if ($existing) {
+            $existing->setAmount($existing->getAmount() + $amount);
+        } else {
+            $accrual = new Accrual();
+            $accrual->setEmployee($employee);
+            $accrual->setPeriod($period);
+            $accrual->setType($type);
+            $accrual->setAmount($amount);
+            $this->entityManager->persist($accrual);
+        }
     }
 }

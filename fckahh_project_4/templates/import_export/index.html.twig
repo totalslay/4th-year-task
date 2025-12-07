@@ -1,0 +1,71 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Import/Export{% endblock %}
+
+{% block body %}
+    <h1>Import & Export</h1>
+
+    <div>
+        <h2>Export Tax Report (CSV)</h2>
+        <p>Export tax report for selected period.</p>
+        
+        <form method="get" action="{{ path('app_export_tax_report', {'id': 0}) }}" id="exportForm">
+            <div>
+                <label for="exportPeriod">Select period:</label>
+                <select id="exportPeriod" name="id" required>
+                    <option value="">-- Select a period --</option>
+                    {% for period in periods %}
+                        <option value="{{ period.id }}">
+                            {{ period.startDate|date('Y-m-d') }} - {{ period.endDate|date('Y-m-d') }} ({{ period.status }})
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <button type="submit" class="btn">Export Tax Report</button>
+        </form>
+    </div>
+
+    <div style="margin-top: 30px;">
+        <h2>Import Timesheet (CSV)</h2>
+        <p>Import employee working hours.</p>
+        
+        <p><strong>Available draft periods:</strong></p>
+        <ul>
+            {% for period in periods %}
+                {% if period.status == 'DRAFT' %}
+                    <li>
+                        <a href="{{ path('app_import_timesheet', {'id': period.id}) }}">
+                            {{ period.startDate|date('Y-m-d') }} - {{ period.endDate|date('Y-m-d') }}
+                        </a>
+                    </li>
+                {% endif %}
+            {% else %}
+                <li>No draft periods available</li>
+            {% endfor %}
+        </ul>
+        
+        <div>
+            <a href="{{ path('app_download_template') }}" class="btn">Download Template</a>
+        </div>
+    </div>
+
+    <div style="margin-top: 30px;">
+        <p><strong>CSV Format:</strong></p>
+        <p>Timesheet: TIN;Worked Hours;Overtime Hours</p>
+        <p>Example: 123456789012;160;10</p>
+    </div>
+
+    <div style="margin-top: 30px;">
+        <a href="{{ path('app_employee_index') }}">Employees</a> |
+        <a href="{{ path('app_payroll_period_index') }}">Payroll Periods</a> |
+        <a href="{{ path('app_async_tasks') }}">Async Tasks</a>
+    </div>
+
+    <script>
+        document.getElementById('exportPeriod').addEventListener('change', function() {
+            const form = document.getElementById('exportForm');
+            const periodId = this.value;
+            form.action = "{{ path('app_export_tax_report', {'id': 0}) }}".replace('0', periodId);
+        });
+    </script>
+{% endblock %}

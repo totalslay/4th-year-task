@@ -1,0 +1,14 @@
+parameters:
+    level: 8
+    paths:
+        - src/
+        - tests/
+    ignoreErrors:
+        - '#PHPDoc tag @var#'
+    excludePaths:
+        - var/
+        - vendor/
+    bootstrapFiles:
+        - vendor/autoload.php
+    symfony:
+        container_xml_path: var/cache/dev/srcApp_KernelDevDebugContainer.xml

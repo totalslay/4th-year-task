@@ -1,0 +1,58 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Import Timesheet - Period {{ period.id }}{% endblock %}
+
+{% block body %}
+    <h1>Import Timesheet</h1>
+    
+    <p><strong>Period:</strong> {{ period.startDate|date('Y-m-d') }} - {{ period.endDate|date('Y-m-d') }}</p>
+    <p><strong>Status:</strong> {{ period.status }}</p>
+    
+    {% if period.status != 'DRAFT' %}
+        <div>
+            <p><strong>Warning:</strong> Can only import into DRAFT periods.</p>
+            <p>Current status: <strong>{{ period.status }}</strong></p>
+            <a href="{{ path('app_import_export_index') }}" class="btn">Back to Import/Export</a>
+        </div>
+    {% else %}
+        <div>
+            <h3>Upload CSV File</h3>
+            <p>Format: TIN;Worked Hours;Overtime Hours</p>
+            
+            <form method="post" enctype="multipart/form-data">
+                <div>
+                    <label for="timesheet_file">CSV File:</label>
+                    <input type="file" id="timesheet_file" name="timesheet_file" accept=".csv" required>
+                </div>
+                <button type="submit" class="btn">Upload</button>
+                <a href="{{ path('app_download_template') }}" class="btn">Template</a>
+                <a href="{{ path('app_import_export_index') }}" class="btn">Cancel</a>
+            </form>
+        </div>
+
+        {% if result is not null %}
+            <div style="margin-top: 30px;">
+                <h3>Results</h3>
+                <p><strong>Imported:</strong> {{ result.success }} records</p>
+                
+                {% if result.errors is not empty %}
+                    <div>
+                        <h4>Errors ({{ result.errors|length }}):</h4>
+                        <ul>
+                            {% for error in result.errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% else %}
+                    <p>All records imported successfully!</p>
+                {% endif %}
+                
+                <div>
+                    <a href="{{ path('app_import_export_index') }}" class="btn">Back</a>
+                    <a href="{{ path('app_payroll_period_show', {'id': period.id}) }}" class="btn">View Period</a>
+                </div>
+            </div>
+        {% endif %}
+    {% endif %}
+{% endblock %}
